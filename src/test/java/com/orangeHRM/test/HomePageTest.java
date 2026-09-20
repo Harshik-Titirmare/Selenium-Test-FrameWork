@@ -13,7 +13,7 @@ public class HomePageTest extends BaseClass {
 	private LoginPage loginPage;
 	private HomePage homePage;
 
-	@BeforeMethod
+	@BeforeMethod(alwaysRun = true)
 	public void setupPages() {
 		loginPage = new LoginPage(getDriver());
 		homePage = new HomePage(getDriver());
