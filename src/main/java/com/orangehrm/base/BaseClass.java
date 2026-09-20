@@ -67,7 +67,7 @@ public class BaseClass {
 
 	// Initialize the WebDriver based on browser define in config.properties file
 	private synchronized void launchBrowser() {
-		String browser = prop.getProperty("browser");
+		String browser = prop.getProperty("browser", "chrome");
 
 		if (browser == null) {
 			throw new IllegalArgumentException("Browser property is null! Please check key 'browser' in config.properties file.");
@@ -87,6 +87,9 @@ public class BaseClass {
 			options.addArguments("--window-size=1920,1080"); // Set explicit browser viewport size to ensure elements
 																// load properly without UI scaling issues
 
+
+			// NEW FIX: Added explicit remote-allow-origins along with CI stability arguments for headless execution
+			options.addArguments("--remote-allow-origins=*");
 
 			// NEW FIX: Create ChromeDriver instance with options for thread-safe assignment
 			driver.set(new ChromeDriver(options));
