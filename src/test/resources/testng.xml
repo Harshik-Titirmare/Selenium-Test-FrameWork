@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="OrangeHRMSuit" parallel="false">
+	<listeners>
+		<listener class-name="io.qameta.allure.testng.AllureTestNg" />
+		<listener class-name="com.orangehrm.listeners.AllureListener" />
+	</listeners>
+
+	<test name="Regression Executions Group">
+		<groups>
+			<run>
+				<include name="regression" />
+			</run>
+		</groups>
+		<classes>
+			<class name="com.orangeHRM.test.HeaderTest" />
+			<class name="com.orangeHRM.test.LoginPageTest" />
+			<class name="com.orangeHRM.test.HomePageTest" />
+			<class name="com.orangeHRM.test.PIMTest" />
+		</classes>
+	</test>
+</suite>

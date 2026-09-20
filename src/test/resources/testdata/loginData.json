@@ -1,0 +1,20 @@
+[
+  {
+    "scenario": "Valid Login Test",
+    "username": "Admin",
+    "password": "admin1234",
+    "expectedError": ""
+  },
+  {
+    "scenario": "Invalid Password Test",
+    "username": "Admin",
+    "password": "admin1233",
+    "expectedError": "Invalid credentials"
+  },
+  {
+    "scenario": "Invalid Username Test",
+    "username": "WrongUser",
+    "password": "admin123",
+    "expectedError": "Invalid credentials"
+  }
+]
