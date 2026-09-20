@@ -29,37 +29,56 @@ public class BaseClass {
 	public static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 	public static ThreadLocal<ActionDriver> actionDriver = new ThreadLocal<>();
 
-	// Load the configuration file
+
+	// NEW FIX: Load configuration file with correct path separator and try-catch for complete stacktrace visibility in Jenkins logs
 	@BeforeSuite(alwaysRun = true)
 	public void loadConfig() throws IOException {
 		prop = new Properties();
-		FileInputStream file = new FileInputStream(
-				System.getProperty("user.dir") + "src/main/resources/config.properties");
-		prop.load(file);
+		String filePath = System.getProperty("user.dir") + "/src/main/resources/config.properties";
+		try {
+			FileInputStream file = new FileInputStream(filePath);
+			prop.load(file);
+			System.out.println("BaseClass: Config properties file loaded successfully from path: " + filePath);
+		} catch (Exception e) {
+			System.out.println("BaseClass ERROR: Unable to load config.properties from path -> " + filePath);
+			e.printStackTrace();
+			throw e; // Rethrow to let TestNG report configuration failures accurately
+		}
 	}
 
-	// Configuration hook stabilized for sequential groups execution blocks
+
+	// NEW FIX: Wrapped setup execution inside explicit try-catch block to log detailed exceptions in Jenkins Console output
 	@BeforeMethod(alwaysRun = true)
 	public synchronized void setup() throws IOException {
-		System.out.println("Setting up WebDriver for : " + this.getClass().getSimpleName());
-		launchBrowser();
-		configureBrowser();
-		staticWait(2);
+		try {
+			System.out.println("Setting up WebDriver for : " + this.getClass().getSimpleName());
+			launchBrowser();
+			configureBrowser();
+			staticWait(2);
 
-		// Initialize the Action Driver only for The Current Thread
-		actionDriver.set(new ActionDriver(driver.get()));
+			// Initialize the Action Driver only for The Current Thread
+			actionDriver.set(new ActionDriver(driver.get()));
+		} catch (Exception e) {
+			System.out.println("BaseClass ERROR: Exception occurred inside @BeforeMethod setup: " + e.getMessage());
+			e.printStackTrace();
+			throw e; // Rethrow exception so TestNG catches configuration failures
+		}
 	}
 
 	// Initialize the WebDriver based on browser define in config.properties file
 	private synchronized void launchBrowser() {
 		String browser = prop.getProperty("browser");
 
+		if (browser == null) {
+			throw new IllegalArgumentException("Browser property is null! Please check key 'browser' in config.properties file.");
+		}
+
 		if (browser.equalsIgnoreCase("chrome")) {
 			// Create ChromeOptions instance to pass browser configuration arguments
 			ChromeOptions options = new ChromeOptions();
 
 			// Configure Chrome for headless execution
-			options.addArguments("--headless=new"); // Run Chrome in headless mode (without GUI)
+//			options.addArguments("--headless=new"); // Run Chrome in headless mode (without GUI)
 			options.addArguments("--no-sandbox"); // necessary when running Chrome as the 'jenkins' service user
 			options.addArguments("--disable-dev-shm-usage"); // Overcome limited resource problems in shared memory
 																// environments (prevents Chrome crashes)
@@ -68,9 +87,9 @@ public class BaseClass {
 			options.addArguments("--window-size=1920,1080"); // Set explicit browser viewport size to ensure elements
 																// load properly without UI scaling issues
 
-			// Initialize ChromeDriver with the defined options
-//			WebDriver driver = new ChromeDriver(options);
-			driver.set(new ChromeDriver(options)); // New instance of ChromeDriver for the current thread
+
+			// NEW FIX: Create ChromeDriver instance with options for thread-safe assignment
+			driver.set(new ChromeDriver(options));
 		} else if (browser.equalsIgnoreCase("firefox")) {
 
 			FirefoxOptions options = new FirefoxOptions();
@@ -97,8 +116,12 @@ public class BaseClass {
 		int imlicitWait = Integer.parseInt(prop.getProperty("implicitWait"));
 		getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(imlicitWait));
 
+		/* ==================== OLD CODE COMMENTED OUT ====================
 		// Maximize The Browser
-		getDriver().manage().window().maximize();
+		// getDriver().manage().window().maximize();
+		================================================================= */
+
+		// NEW COMMENT: Avoid maximize() in headless mode as viewport resolution is already set via window-size options argument
 
 		// Navigate to url
 		try {
@@ -170,10 +193,12 @@ public class BaseClass {
 		return actionDriver.get();
 	}
 
+	/* ==================== OLD CODE COMMENTED OUT ====================
 	// Driver setter Method
-//	public void setDriver(ThreadLocal<WebDriver> driver) {
-//		this.driver = driver;
-//	}
+	// public void setDriver(ThreadLocal<WebDriver> driver) {
+	// 	this.driver = driver;
+	// }
+	================================================================= */
 
 	// static wait for pause
 	public void staticWait(int seconds) {
