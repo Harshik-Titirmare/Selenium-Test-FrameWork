@@ -9,8 +9,11 @@ import java.util.concurrent.locks.LockSupport;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -30,12 +33,13 @@ public class BaseClass {
 	@BeforeSuite(alwaysRun = true)
 	public void loadConfig() throws IOException {
 		prop = new Properties();
-		FileInputStream file = new FileInputStream("src/main/resources/config.properties");
+		FileInputStream file = new FileInputStream(
+				System.getProperty("user.dir") + "src/main/resources/config.properties");
 		prop.load(file);
 	}
 
 	// Configuration hook stabilized for sequential groups execution blocks
-	@BeforeMethod (alwaysRun = true)
+	@BeforeMethod(alwaysRun = true)
 	public synchronized void setup() throws IOException {
 		System.out.println("Setting up WebDriver for : " + this.getClass().getSimpleName());
 		launchBrowser();
@@ -51,11 +55,38 @@ public class BaseClass {
 		String browser = prop.getProperty("browser");
 
 		if (browser.equalsIgnoreCase("chrome")) {
-			driver.set(new ChromeDriver()); // New instance of ChromeDriver for the current thread
+			// Create ChromeOptions instance to pass browser configuration arguments
+			ChromeOptions options = new ChromeOptions();
+
+			// Configure Chrome for headless execution
+			options.addArguments("--headless=new"); // Run Chrome in headless mode (without GUI)
+			options.addArguments("--no-sandbox"); // necessary when running Chrome as the 'jenkins' service user
+			options.addArguments("--disable-dev-shm-usage"); // Overcome limited resource problems in shared memory
+																// environments (prevents Chrome crashes)
+			options.addArguments("--disable-gpu"); // Disable GPU hardware acceleration to avoid driver compatibility
+													// issues in headless mode
+			options.addArguments("--window-size=1920,1080"); // Set explicit browser viewport size to ensure elements
+																// load properly without UI scaling issues
+
+			// Initialize ChromeDriver with the defined options
+//			WebDriver driver = new ChromeDriver(options);
+			driver.set(new ChromeDriver(options)); // New instance of ChromeDriver for the current thread
 		} else if (browser.equalsIgnoreCase("firefox")) {
-			driver.set(new FirefoxDriver()); // New instance of FirefoxDriver for the current thread
+
+			FirefoxOptions options = new FirefoxOptions();
+			options.addArguments("-headless");
+			options.addArguments("--width=1920");
+			options.addArguments("--height=1080");
+			driver.set(new FirefoxDriver(options)); // New instance of FirefoxDriver for the current thread
 		} else if (browser.equalsIgnoreCase("edge")) {
-			driver.set(new EdgeDriver()); // New instance of EdgeDriver for the current thread
+			// Configure Edge for headless execution
+			EdgeOptions options = new EdgeOptions();
+			options.addArguments("--headless=new");
+			options.addArguments("--no-sandbox");
+			options.addArguments("--disable-dev-shm-usage");
+			options.addArguments("--disable-gpu");
+			options.addArguments("--window-size=1920,1080");
+			driver.set(new EdgeDriver(options)); // New instance of EdgeDriver for the current thread
 		} else {
 			throw new IllegalArgumentException("Browser Not Supported " + browser);
 		}
@@ -77,21 +108,25 @@ public class BaseClass {
 		}
 	}
 
-	// Capture screenshot using Allure programmatic API before cleaning thread context wrappers
-	@AfterMethod (alwaysRun = true)
+	// Capture screenshot using Allure programmatic API before cleaning thread
+	// context wrappers
+	@AfterMethod(alwaysRun = true)
 	public synchronized void tearDown(ITestResult result) {
 
-		// 1. Capture screenshot using Allure's direct programmatic API if the test fails
+		// 1. Capture screenshot using Allure's direct programmatic API if the test
+		// fails
 		if (result.getStatus() == ITestResult.FAILURE) {
 			try {
 				if (driver.get() != null) {
 					System.out.println("BaseClass: Direct injection of failure screenshot for: " + result.getName());
 
 					// Capture bytes from browser
-					byte[] screenshotBytes = ((org.openqa.selenium.TakesScreenshot) getDriver()).getScreenshotAs(org.openqa.selenium.OutputType.BYTES);
+					byte[] screenshotBytes = ((org.openqa.selenium.TakesScreenshot) getDriver())
+							.getScreenshotAs(org.openqa.selenium.OutputType.BYTES);
 
 					// Directly push into the active Allure report stream
-					io.qameta.allure.Allure.addAttachment("Failure Screenshot", new java.io.ByteArrayInputStream(screenshotBytes));
+					io.qameta.allure.Allure.addAttachment("Failure Screenshot",
+							new java.io.ByteArrayInputStream(screenshotBytes));
 				}
 			} catch (Exception e) {
 				System.out.println("BaseClass: Programmatic attachment failed: " + e.getMessage());
