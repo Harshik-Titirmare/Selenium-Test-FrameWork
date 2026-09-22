@@ -90,6 +90,11 @@ public class BaseClass {
 
 			// NEW FIX: Added explicit remote-allow-origins along with CI stability arguments for headless execution
 			options.addArguments("--remote-allow-origins=*");
+			
+			// CRITICAL FIX FOR LINUX CHROME INSTANCE EXITED ERROR
+			options.addArguments("--user-data-dir=/tmp/user-data-" + System.currentTimeMillis());
+			options.addArguments("--disable-extensions");
+			options.addArguments("--disable-setuid-sandbox");
 
 			// NEW FIX: Create ChromeDriver instance with options for thread-safe assignment
 			driver.set(new ChromeDriver(options));
