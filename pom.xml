@@ -46,12 +46,19 @@
 			<version>2.10.1</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- To clean up the SLF4J warning in your logs, add the slf4j-simple dependency-->
+		<!-- To clean up the SLF4J warning in your logs, add the slf4j-simple
+		dependency-->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>2.0.12</version>
 			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.16.1</version>
 		</dependency>
 
 	</dependencies>
