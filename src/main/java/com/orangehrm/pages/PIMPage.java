@@ -104,6 +104,15 @@ public class PIMPage {
 	}
 
 	public void clickSave() {
+		try {
+			// Spinner/Loader ke gayab hone ka wait karein taaki click intercept na ho
+			new WebDriverWait(BaseClass.getDriver(), Duration.ofSeconds(10))
+					.until(ExpectedConditions.invisibilityOfElementLocated(By.className("oxd-form-loader")));
+		} catch (Exception e) {
+			System.out.println("PIMPage INFO: Loader spinner was not present or disappeared quickly -> " + e.getMessage());
+		}
+
+		// ActionDriver ka click function call karein
 		getAction().click(saveButton);
 	}
 

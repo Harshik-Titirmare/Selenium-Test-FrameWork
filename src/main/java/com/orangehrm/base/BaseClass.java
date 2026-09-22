@@ -78,7 +78,7 @@ public class BaseClass {
 			ChromeOptions options = new ChromeOptions();
 
 			// Configure Chrome for headless execution
-			options.addArguments("--headless=new"); // Run Chrome in headless mode (without GUI)
+//			options.addArguments("--headless=new"); // Run Chrome in headless mode (without GUI)
 			options.addArguments("--no-sandbox"); // necessary when running Chrome as the 'jenkins' service user
 			options.addArguments("--disable-dev-shm-usage"); // Overcome limited resource problems in shared memory
 																// environments (prevents Chrome crashes)
@@ -92,9 +92,9 @@ public class BaseClass {
 			options.addArguments("--remote-allow-origins=*");
 			
 			// CRITICAL FIX FOR LINUX CHROME INSTANCE EXITED ERROR
-			options.addArguments("--user-data-dir=/tmp/user-data-" + System.currentTimeMillis());
-			options.addArguments("--disable-extensions");
-			options.addArguments("--disable-setuid-sandbox");
+		    options.addArguments("--user-data-dir=/tmp/user-data-" + System.currentTimeMillis());
+		    options.addArguments("--disable-extensions");
+		    options.addArguments("--disable-setuid-sandbox");
 
 			// NEW FIX: Create ChromeDriver instance with options for thread-safe assignment
 			driver.set(new ChromeDriver(options));
