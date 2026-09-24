@@ -73,10 +73,10 @@ public class AllureListener implements ITestListener {
         if (activeDriver != null) {
             System.out.println("Driver found successfully! Capturing screenshot...");
             
-            // 1. Allure Report me attach karega
+         // 1. Attaches screenshot to the Allure Report
             saveScreenshotToAllure(activeDriver);
 
-            // 2. Email attachments ke liye target/screenshots folder me save karega
+         // 2. Saves screenshot locally in target/screenshots folder for email attachments
             saveScreenshotToDisk(activeDriver, result.getName());
         } else {
             System.out.println("Screenshot skipped: WebDriver was null for this execution thread.");
@@ -106,7 +106,7 @@ public class AllureListener implements ITestListener {
         return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
     }
 
-    // File disk par save karne ka method (Jenkins Email Attachment ke liye)
+ // Method to save the screenshot to physical disk (used for Jenkins Email Attachment)
     public void saveScreenshotToDisk(WebDriver driver, String testName) {
         try {
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
