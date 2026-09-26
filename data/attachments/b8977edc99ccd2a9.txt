@@ -1,0 +1,2 @@
+Test execution failed due to:
+Mandatory Fields Validation Test Failed: expected [Form saved successfully without required fields] but found [Form submission blocked by required field validation errors]
