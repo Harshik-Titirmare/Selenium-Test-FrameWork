@@ -1,0 +1,2 @@
+Test execution failed due to:
+Login Scenario Validation Failed: expected [Admin Tab is displayed successfully] but found [Admin Tab is NOT displayed (UI Error: 'Invalid credentials')]
