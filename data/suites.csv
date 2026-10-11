@@ -1,0 +1,8 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","17","verifyHeader","OrangeHRMSuit","2026-10-11","passed","2026-10-11","com.orangeHRM.test.HeaderTest","Regression Executions Group","com.orangeHRM.test.HeaderTest","verifyHeader"
+"","15871","loginDataDrivenTest","OrangeHRMSuit","2026-10-11","passed","2026-10-11","com.orangeHRM.test.LoginPageTest","Regression Executions Group","com.orangeHRM.test.LoginPageTest","loginDataDrivenTest"
+"","11329","verifyAddEmployeeWithLoginDetailsFlow","OrangeHRMSuit","2026-10-11","passed","2026-10-11","com.orangeHRM.test.PIMTest","Regression Executions Group","com.orangeHRM.test.PIMTest","verifyAddEmployeeWithLoginDetailsFlow"
+"","16173","loginDataDrivenTest","OrangeHRMSuit","2026-10-11","passed","2026-10-11","com.orangeHRM.test.LoginPageTest","Regression Executions Group","com.orangeHRM.test.LoginPageTest","loginDataDrivenTest"
+"","32280","loginDataDrivenTest","OrangeHRMSuit","2026-10-11","failed","2026-10-11","com.orangeHRM.test.LoginPageTest","Regression Executions Group","com.orangeHRM.test.LoginPageTest","loginDataDrivenTest"
+"","3227","verifyAdminTabVisibility","OrangeHRMSuit","2026-10-11","passed","2026-10-11","com.orangeHRM.test.HomePageTest","Regression Executions Group","com.orangeHRM.test.HomePageTest","verifyAdminTabVisibility"
+"","24592","verifyAddEmployeeMandatoryFieldsValidationFailure","OrangeHRMSuit","2026-10-11","failed","2026-10-11","com.orangeHRM.test.PIMTest","Regression Executions Group","com.orangeHRM.test.PIMTest","verifyAddEmployeeMandatoryFieldsValidationFailure"
